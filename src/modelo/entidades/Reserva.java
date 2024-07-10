@@ -4,12 +4,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+//Segunda solução: Implementando a verificação na classe, mas retornando mensagens de erro
+
 public class Reserva {
-    
+
     private Integer numeroQuarto;
     private Date checkin;
     private Date checkout;
-    
+
     private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
     public Reserva() {
@@ -36,23 +38,32 @@ public class Reserva {
     public Date getCheckout() {
         return checkout;
     }
-    
-    public long duracao()
-    {
+
+    public long duracao() {
         long dif = checkout.getTime() - checkin.getTime();
         return TimeUnit.DAYS.convert(dif, TimeUnit.MILLISECONDS);
     }
-    
-    public void atualizarDatas(Date checkin, Date checkout)
-    {
+
+    public String atualizarDatas(Date checkin, Date checkout) {
+        
+        Date agora = new Date();
+        if (checkin.before(agora) || checkout.before(agora)) {
+            return "as datas para atualizar a reserva nao devem ser menores do que a data atual";
+        } 
+        
+        if (!checkout.after(checkin)) {
+            return "data do check-out deve ser superior a do check-in";
+        }
+
         this.checkin = checkin;
         this.checkout = checkout;
+        
+        return null;
     }
-    
+
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "Sala " + numeroQuarto + ", check-in: " + sdf.format(checkin) + ", check-out: " + sdf.format(checkout) + ", " + duracao() + " noites";
     }
-    
+
 }
